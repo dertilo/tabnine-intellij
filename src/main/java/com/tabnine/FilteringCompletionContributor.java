@@ -53,7 +53,7 @@ public class FilteringCompletionContributor extends CompletionContributor {
                 .mapToObj(i -> (Integer) i) //WTF? I don't know how java works!
                 .sorted(Comparator.comparing(i -> {
                     boolean is_tabnine = elements.get(i).getLookupElement().getObject() instanceof TabNineCompletion;
-                    return is_tabnine? i + Integer.MAX_VALUE :i; // if is tabnine should go to the very back! behind all others!
+                    return is_tabnine? i + 10000 :i; // if is tabnine should go to the very back! behind all others!
                 }))
                 .collect(Collectors.toList());
 

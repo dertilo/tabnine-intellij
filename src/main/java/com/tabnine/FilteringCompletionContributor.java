@@ -16,7 +16,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.tabnine.general.StaticConfig.*;
@@ -28,33 +30,35 @@ public class FilteringCompletionContributor extends CompletionContributor {
     public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull final CompletionResultSet resultSet) {
         ArrayList<CompletionResult> elements = new ArrayList<>();
 
-        resultSet.runRemainingContributors(parameters,r -> {
-            System.out.println(r.toString());
-            elements.add(r);
-        });
+        // collect the other completion-contributors results
+        resultSet.runRemainingContributors(parameters, elements::add);
 
-        //elements.stream().filter(r -> !(r.getLookupElement().getObject() instanceof TabNineCompletion)).forEach(e -> resultSet.passResult(e));
-        IntStream.range(0,elements.size())
+        List<Integer> filteredsordedResults = IntStream.range(0, elements.size())
                 .filter(i -> {
-                    if(elements.get(i).getLookupElement().getObject() instanceof TabNineCompletion){
-                        TabNineCompletion tabnine = (TabNineCompletion) elements.get(i).getLookupElement().getObject();
-                        boolean is_redundant = elements.stream()
+                    LookupElement tabnine_element = elements.get(i).getLookupElement();
+                    if (tabnine_element.getObject() instanceof TabNineCompletion) {
+                        String tabnine_autocompl = tabnine_element.getLookupString();
+
+                        boolean already_in_other_contributers_results = elements.stream()
                                 .filter(e -> !(e.getLookupElement().getObject() instanceof TabNineCompletion))
                                 .anyMatch(e -> {
-                                    String a = e.getLookupElement().getLookupString();
-                                    String b = elements.get(i).getLookupElement().getLookupString();
-                                    return a.equals(b);
+                                    String another_autocompl = e.getLookupElement().getLookupString();
+                                    return another_autocompl.equals(tabnine_autocompl);
                                 });
-                        return ! is_redundant;
+                        return !already_in_other_contributers_results;
                     } else {
                         return true;
                     }
                 })
-                .mapToObj(i-> (Integer) i)
+                .mapToObj(i -> (Integer) i) //WTF? I don't know how java works!
                 .sorted(Comparator.comparing(i -> {
-                    return elements.get(i).getLookupElement().getObject() instanceof TabNineCompletion ? i + Integer.MAX_VALUE : i;
+                    boolean is_tabnine = elements.get(i).getLookupElement().getObject() instanceof TabNineCompletion;
+                    return is_tabnine? i + Integer.MAX_VALUE :i; // if is tabnine should go to the very back! behind all others!
                 }))
-                .forEach(i -> resultSet.passResult(elements.get(i)));
+                .collect(Collectors.toList());
+
+        // add to resultSet
+        filteredsordedResults.forEach(i -> resultSet.passResult(elements.get(i)));;
 
     }
 }

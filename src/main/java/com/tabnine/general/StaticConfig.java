@@ -19,7 +19,7 @@ public class StaticConfig {
     // Must be identical to what is written under <id>com.tabnine.TabNine</id> in plugin.xml !!!
     public static final String TABNINE_PLUGIN_ID_RAW = "com.tabnine.TabNine";
     public static final PluginId TABNINE_PLUGIN_ID = PluginId.getId(TABNINE_PLUGIN_ID_RAW);
-    public static final int MAX_COMPLETIONS = 5;
+    public static final int MAX_COMPLETIONS = 3;
     public static final String BINARY_PROTOCOL_VERSION = "2.0.2";
     public static final int COMPLETION_TIME_THRESHOLD = 1000;
     public static final int ILLEGAL_RESPONSE_THRESHOLD = 5;
@@ -31,7 +31,7 @@ public class StaticConfig {
     public static final String SET_STATE_RESPONSE_RESULT_STRING = "Done";
     public static final String UNINSTALLING_FLAG = "--uninstalling";
     public static final int CONSECUTIVE_TIMEOUTS_THRESHOLD = 20;
-    public static final String BRAND_NAME = "tabnine";
+    public static final String BRAND_NAME = "filtered-tabnine-v1";
     public static final String TARGET_NAME = getDistributionName();
     public static final String EXECUTABLE_NAME = getExeName();
     public static final String TABNINE_FOLDER_NAME = ".tabnine";

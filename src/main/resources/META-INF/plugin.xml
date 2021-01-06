@@ -143,6 +143,7 @@
         <ApplicationLoadListener implementation="com.tabnine.Initializer"/>
         <statusBarWidgetProvider implementation="com.tabnine.statusBar.StatusBarProvider"/>
         <statusBarWidgetProvider implementation="com.tabnine.statusBar.StatusBarPromotionProvider"/>
-        <completion.contributor language="any" implementationClass="com.tabnine.TabNineCompletionContributor" order="first"/>
+        <completion.contributor language="any" implementationClass="com.tabnine.TabNineCompletionContributor"/>
+        <completion.contributor language="any" implementationClass="com.tabnine.FilteringCompletionContributor" order="first"/>
     </extensions>
 </idea-plugin>
